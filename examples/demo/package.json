@@ -1,0 +1,30 @@
+{
+  "name": "demo",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "@types/twemoji": "^12.1.2",
+    "autoprefixer": "^10.3.7",
+    "babel-preset-solid": "^1.2.1",
+    "eslint": "^7.32.0",
+    "eslint-config-lxsmnsyc": "^0.3.0",
+    "postcss": "^8.3.11",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.13",
+    "vite-plugin-solid": "^2.1.1"
+  },
+  "dependencies": {
+    "solid-emoji-picker": "0.0.0",
+    "solid-js": "^1.2.1",
+    "tailwindcss": "^2.2.17",
+    "twemoji": "^13.1.0"
+  },
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "name": "solid-emoji-picker",
+  "version": "0.0.0",
+  "types": "dist/types/index.d.ts",
+  "main": "dist/cjs/production/index.jsx",
+  "module": "dist/esm/production/index.jsx",
+  "exports": {
+    ".": {
+      "development": {
+        "require": "./dist/cjs/development/index.jsx",
+        "import": "./dist/esm/development/index.jsx"
+      },
+      "require": "./dist/cjs/production/index.jsx",
+      "import": "./dist/esm/production/index.jsx",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./dev": {
+      "production": {
+        "require": "./dist/cjs/production/index.jsx",
+        "import": "./dist/esm/production/index.jsx"
+      },
+      "require": "./dist/cjs/development/index.jsx",
+      "import": "./dist/esm/development/index.jsx",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./esm": {
+      "development": "./dist/esm/development/index.jsx",
+      "production": "./dist/esm/production/index.jsx",
+      "default": "./dist/esm/production/index.jsx",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./cjs": {
+      "development": "./dist/cjs/development/index.jsx",
+      "production": "./dist/cjs/production/index.jsx",
+      "default": "./dist/cjs/production/index.jsx",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pridepack"
+  ],
+  "peerDependencies": {
+    "solid-js": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "eslint": "^7.32.0",
+    "eslint-config-lxsmnsyc": "^0.3.0",
+    "pridepack": "1.0.3",
+    "solid-js": "^1.2.5",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.4"
+  },
+  "private": false,
+  "description": "Emoji Picker for Solid",
+  "repository": {
+    "url": "https://github.com/lxsmnsyc/solid-emoji-picker.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/lxsmnsyc/solid-emoji-picker/tree/main/packages/solid-emoji-picker",
+  "bugs": {
+    "url": "https://github.com/lxsmnsyc/solid-emoji-picker/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Alexis Munsayac",
+  "scripts": {
+    "prepublishOnly": "pridepack clean && pridepack build",
+    "build": "pridepack build",
+    "type-check": "pridepack check",
+    "lint": "pridepack lint",
+    "test": "pridepack test --passWithNoTests",
+    "clean": "pridepack clean",
+    "watch": "pridepack watch",
+    "start": "pridepack start",
+    "dev": "pridepack dev"
+  }
+}

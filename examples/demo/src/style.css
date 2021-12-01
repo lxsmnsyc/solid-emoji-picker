@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.emoji-picker {
+  @apply w-96 h-96 rounded-lg overflow-scroll bg-gray-50;
+  @apply flex flex-col items-center space-y-2 p-2;
+  @apply shadow-lg;
+}
+
+.emoji-section {
+  @apply mx-2 flex flex-col items-center;
+}
+
+.emoji-section-title {
+  @apply font-semibold text-gray-900 text-lg;
+}
+
+.emoji-items {
+  @apply flex flex-wrap items-center justify-center;
+}
+
+.emoji-button {
+  @apply w-10 h-10 p-2 rounded-lg;
+  @apply hover:bg-gray-200 active:bg-gray-100;
+  @apply flex items-center justify-center;
+}
+
+span.emoji {
+  @apply text-2xl;
+}
+
+img.emoji {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
