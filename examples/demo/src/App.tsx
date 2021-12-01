@@ -30,7 +30,9 @@ function SkinTonePicker(props: SkinTonePickerProps): JSX.Element {
   return (
     <button
       type="button"
-      onClick={[props.setValue, props.value]}
+      onClick={() => {
+        props.setValue(props.value);
+      }}
       class={classNames(SKIN_TONE_PICKER, props.selected && 'bg-opacity-25')}
     >
       <span class="sr-only">{props.description}</span>
@@ -44,9 +46,10 @@ function renderTwemoji(
   components: EmojiComponents,
   tone?: EmojiSkinTone,
 ): JSX.Element {
-  const skinTone = tone && emoji.skin_tone_support
+  const skinTone = (tone && emoji.skin_tone_support)
     ? convertSkinToneToComponent(components, tone)
     : '';
+
   return <span innerHTML={twemoji.parse(`${emoji.emoji}${skinTone}`)} />;
 }
 
