@@ -23,16 +23,16 @@ export function setCDN(url: string): void {
   EMOJI_KEY = `${url}${ORIGIN_EMOJI_KEY}`;
 }
 
-export function setDataURL(url: string): void {
-  GROUP_DATA_KEY = url;
-}
-
 export function setComponentsURL(url: string): void {
   COMPONENTS_KEY = url;
 }
 
 export function setEmojiURL(url: string): void {
   EMOJI_KEY = url;
+}
+
+export function setEmojiGroupURL(url: string): void {
+  GROUP_DATA_KEY = url;
 }
 
 export interface Emoji {
