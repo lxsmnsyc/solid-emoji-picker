@@ -1,6 +1,6 @@
 {
   "name": "solid-emoji-picker",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "type": "module",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/cjs/production/index.jsx",
