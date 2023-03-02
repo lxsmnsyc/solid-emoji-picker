@@ -2,7 +2,7 @@
 
 > Unstyled Emoji Picker component for SolidJS
 
-[![NPM](https://img.shields.io/npm/v/solid-emoji-picker.svg)](https://www.npmjs.com/package/solid-emoji-picker) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)[![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?style=flat-square&logo=codesandbox)](https://codesandbox.io/s/github/LXSMNSYC/solid-emoji-picker/tree/main/examples/demo)
+[![NPM](https://img.shields.io/npm/v/solid-emoji-picker.svg)](https://www.npmjs.com/package/solid-emoji-picker) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript) [![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?style=flat-square&logo=codesandbox)](https://codesandbox.io/s/github/LXSMNSYC/solid-emoji-picker/tree/main/examples/demo)
 
 ## Install
 
@@ -93,16 +93,29 @@ Here's an example with [`twemoji`](https://github.com/twitter/twemoji):
 
 ```jsx
 import twemoji from 'twemoji';
+import {
+  convertSkinToneToComponent,
+  getEmojiWithSkinTone,
+} from 'solid-emoji-picker';
 
-function renderTwemoji(
+function getTwemoji(
+  emojis,
   emoji,
   components,
   tone,
 ) {
-  const skinTone = tone && emoji.skin_tone_support
-    ? convertSkinToneToComponent(components, tone)
-    : '';
-  return <span innerHTML={twemoji.parse(`${emoji.emoji}${skinTone}`)} />;
+  const skinTone = convertSkinToneToComponent(components, tone);
+  const tonedEmoji = getEmojiWithSkinTone(emojis, emoji, skinTone);
+  return twemoji.parse(tonedEmoji);
+}
+
+function renderTwemoji(
+  emojis,
+  emoji,
+  components,
+  tone,
+) {
+  return <span innerHTML={getTwemoji(emojis, emoji, components, tone)} />;
 }
 
 <EmojiPicker renderEmoji={renderTwemoji} />
@@ -119,18 +132,21 @@ If `renderEmoji` is unspecified, it renders the following:
 By default, `solid-emoji-picker` loads the emoji data from `unicode-emoji-json`'s UNPKG. You can use the following to modify the data handling:
 
 - `setCDN` - sets the base CDN path, defaults to `"https://unpkg.com/unicode-emoji-json/"`
-- `setDataURL` - specify the full path of the group data JSON. If not set, it defaults to selected CDN path + `"data-by-group.json"`.
+- `setEmojiURL` - specify the full path of the emoji data JSON. If not set, it defaults to selected CDN path + `"data-by-emoji.json"`.
+- `setGroupURL` - specify the full path of the group data JSON. If not set, it defaults to selected CDN path + `"data-by-group.json"`.
 - `setComponentsURL` - specify the full path of the component JSON. If not set, it defaults to selected CDN path + `"data-emoji-components.json"`.
 - `loadEmojiData` - Fetch the emoji data.
 - `loadEmojiComponents` - Fetch the components data.
+- `loadEmojiGroupData` - Fetch the emoji group data.
 - `setEmojiData` - Set the emoji data.
 - `setEmojiComponents` - Set the components data.
+- `setEmojiGroupData` - Set the emoji group data.
 
 ### Suspense
 
 `<EmojiPicker>` uses `createResource` for data fetching. Wrapping it in `<Suspense>` is recommended.
 
-To directly access these resource primitives, you can use `useEmojiData` and `useEmojiComponents`, both returns the data resource.
+To directly access these resource primitives, you can use `useEmojiData`, `useEmojiGroupData` and `useEmojiComponents`, both returns the data resource.
 
 ## Sponsors
 
