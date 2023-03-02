@@ -1,9 +1,10 @@
 {
   "name": "solid-emoji-picker",
   "version": "0.1.2",
-  "types": "dist/types/index.d.ts",
-  "main": "dist/cjs/production/index.jsx",
-  "module": "dist/esm/production/index.jsx",
+  "type": "module",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/cjs/production/index.jsx",
+  "module": "./dist/esm/production/index.jsx",
   "exports": {
     ".": {
       "development": {
@@ -12,27 +13,6 @@
       },
       "require": "./dist/cjs/production/index.jsx",
       "import": "./dist/esm/production/index.jsx",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./dev": {
-      "production": {
-        "require": "./dist/cjs/production/index.jsx",
-        "import": "./dist/esm/production/index.jsx"
-      },
-      "require": "./dist/cjs/development/index.jsx",
-      "import": "./dist/esm/development/index.jsx",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./esm": {
-      "development": "./dist/esm/development/index.jsx",
-      "production": "./dist/esm/production/index.jsx",
-      "default": "./dist/esm/production/index.jsx",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./cjs": {
-      "development": "./dist/cjs/development/index.jsx",
-      "production": "./dist/cjs/production/index.jsx",
-      "default": "./dist/cjs/production/index.jsx",
       "types": "./dist/types/index.d.ts"
     }
   },
@@ -51,13 +31,13 @@
     "solid-js": "^1.2"
   },
   "devDependencies": {
-    "@types/node": "^17.0.35",
-    "eslint": "^8.16.0",
-    "eslint-config-lxsmnsyc": "^0.4.0",
-    "pridepack": "1.1.1",
-    "solid-js": "^1.4.3",
-    "tslib": "^2.4.0",
-    "typescript": "^4.6.4"
+    "@types/node": "^18.13.0",
+    "eslint": "^8.35.0",
+    "eslint-config-lxsmnsyc": "^0.4.8",
+    "pridepack": "2.4.0",
+    "solid-js": "^1.6.11",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
   },
   "private": false,
   "description": "Emoji Picker for Solid",
@@ -83,5 +63,8 @@
     "watch": "pridepack watch",
     "start": "pridepack start",
     "dev": "pridepack dev"
+  },
+  "typesVersions": {
+    "*": {}
   }
 }

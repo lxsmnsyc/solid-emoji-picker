@@ -4,8 +4,12 @@ import {
   Emoji,
   convertSkinToneToComponent,
   EmojiComponents,
+  getEmojiWithSkinTone,
+  useEmojiComponents,
+  EmojiData,
+  useEmojiData,
 } from 'solid-emoji-picker';
-import { createSignal, JSX, Setter } from 'solid-js';
+import { createSignal, JSX, Setter, Show } from 'solid-js';
 import twemoji from 'twemoji';
 
 function classNames(...classes: (string | boolean | undefined)[]): string {
@@ -41,16 +45,24 @@ function SkinTonePicker(props: SkinTonePickerProps): JSX.Element {
   );
 }
 
+function getTwemoji(
+  emojis: EmojiData,
+  emoji: Emoji,
+  components: EmojiComponents,
+  tone?: EmojiSkinTone,
+) {
+  const skinTone = convertSkinToneToComponent(components, tone);
+  const tonedEmoji = getEmojiWithSkinTone(emojis, emoji, skinTone);
+  return twemoji.parse(tonedEmoji);
+}
+
 function renderTwemoji(
+  emojis: EmojiData,
   emoji: Emoji,
   components: EmojiComponents,
   tone?: EmojiSkinTone,
 ): JSX.Element {
-  const skinTone = (tone && emoji.skin_tone_support)
-    ? convertSkinToneToComponent(components, tone)
-    : '';
-
-  return <span innerHTML={twemoji.parse(`${emoji.emoji}${skinTone}`)} />;
+  return <span innerHTML={getTwemoji(emojis, emoji, components, tone)} />;
 }
 
 export default function App(): JSX.Element {
@@ -59,6 +71,9 @@ export default function App(): JSX.Element {
   const [useTwemoji, setUseTwemoji] = createSignal(true);
 
   const [search, setSearch] = createSignal('');
+
+  const emojisData = useEmojiData();
+  const componentsData = useEmojiComponents();
 
   return (
     <div class="min-h-screen bg-gradient-to-bl from-indigo-600 to-sky-400 flex flex-col space-y-4 items-center justify-center">
@@ -83,7 +98,16 @@ export default function App(): JSX.Element {
         />
       </div>
       <span class="text-3xl text-gray-50 font-mono">
-        {pickedEmoji()?.emoji ?? 'No emoji picked.'}
+        <Show when={pickedEmoji()} keyed fallback='No emoji picked.'>
+          {(picked) => {
+            const emojis = emojisData();
+            const components = componentsData();
+            if (emojis && components) {
+              return renderTwemoji(emojis, picked, components, skinTone())
+            }
+            return null;
+          }}
+        </Show>
       </span>
       <div class="flex items-center justify-center">
         <SkinTonePicker

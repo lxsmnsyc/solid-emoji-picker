@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .emoji-picker {
-  @apply w-96 h-96 rounded-lg overflow-scroll bg-gray-50;
+  @apply w-96 h-96 rounded-lg overflow-auto bg-gray-50;
   @apply flex flex-col items-center space-y-2 p-2;
   @apply shadow-lg;
 }

@@ -132,6 +132,10 @@ By default, `solid-emoji-picker` loads the emoji data from `unicode-emoji-json`'
 
 To directly access these resource primitives, you can use `useEmojiData` and `useEmojiComponents`, both returns the data resource.
 
+## Sponsors
+
+![Sponsors](https://github.com/lxsmnsyc/sponsors/blob/main/sponsors.svg?raw=true)
+
 ## License
 
 MIT © [lxsmnsyc](https://github.com/lxsmnsyc)
