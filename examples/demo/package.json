@@ -1,6 +1,6 @@
 {
   "name": "demo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,7 +17,7 @@
     "vite-plugin-solid": "^2.7.2"
   },
   "dependencies": {
-    "solid-emoji-picker": "0.2.0",
+    "solid-emoji-picker": "0.2.1",
     "solid-js": "^1.8.1",
     "tailwindcss": "^3.3.3",
     "twemoji": "^14.0.2"
