@@ -1,10 +1,11 @@
-/* eslint-disable camelcase */
+import type {
+  JSX,
+  Resource,
+} from 'solid-js';
 import {
   createMemo,
   createResource,
   For,
-  JSX,
-  Resource,
   Show,
 } from 'solid-js';
 
@@ -194,7 +195,7 @@ export function EmojiPicker(props: EmojiPickerProps): JSX.Element {
 
   return (
     <div class="emoji-picker">
-      {() => {
+      {createMemo(() => {
         const emoji = emojiData();
         const components = componentData();
         const emojiGroup = emojiGroupData();
@@ -202,35 +203,35 @@ export function EmojiPicker(props: EmojiPickerProps): JSX.Element {
         if (emoji && components && emojiGroup) {
           return (
             <For each={Object.keys(emojiGroup)}>
-                {(group) => (
-                  <div class="emoji-section">
-                    <span class="emoji-section-title">{group}</span>
-                    <div class="emoji-items">
-                      <For each={emojiGroup[group]}>
-                        {(emojiItem) => (
-                          <Show when={props.filter ? props.filter(emojiItem) : true}>
-                            <button
-                              type="button"
-                              class="emoji-button"
-                              onClick={props.onEmojiClick && [props.onEmojiClick, emojiItem]}
-                              onFocus={props.onEmojiFocus && [props.onEmojiFocus, emojiItem]}
-                              onMouseOver={props.onEmojiHover && [props.onEmojiHover, emojiItem]}
-                              title={emojiItem.name}
-                            >
-                              {renderEmoji()(emoji, emojiItem, components, props.skinTone)}
-                            </button>
-                          </Show>
-                        )}
-                      </For>
-                    </div>
+              {(group): JSX.Element => (
+                <div class="emoji-section">
+                  <span class="emoji-section-title">{group}</span>
+                  <div class="emoji-items">
+                    <For each={emojiGroup[group]}>
+                      {(emojiItem): JSX.Element => (
+                        <Show when={props.filter ? props.filter(emojiItem) : true}>
+                          <button
+                            type="button"
+                            class="emoji-button"
+                            onClick={props.onEmojiClick && [props.onEmojiClick, emojiItem]}
+                            onFocus={props.onEmojiFocus && [props.onEmojiFocus, emojiItem]}
+                            onMouseOver={props.onEmojiHover && [props.onEmojiHover, emojiItem]}
+                            title={emojiItem.name}
+                          >
+                            {renderEmoji()(emoji, emojiItem, components, props.skinTone)}
+                          </button>
+                        </Show>
+                      )}
+                    </For>
                   </div>
-                )}
-              </For>
+                </div>
+              )}
+            </For>
           );
         }
 
         return null;
-      }}
+      })() }
     </div>
   );
 }
