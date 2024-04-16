@@ -1,19 +1,14 @@
 import type {
   EmojiSkinTone,
   Emoji,
-  EmojiComponents,
-  EmojiData,
 } from 'solid-emoji-picker';
 import {
   EmojiPicker,
-  convertSkinToneToComponent,
-  getEmojiWithSkinTone,
   useEmojiComponents,
   useEmojiData,
 } from 'solid-emoji-picker';
 import type { JSX, Setter } from 'solid-js';
 import { createSignal, Show } from 'solid-js';
-import twemoji from 'twemoji';
 
 function classNames(...classes: (string | boolean | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -48,30 +43,9 @@ function SkinTonePicker(props: SkinTonePickerProps): JSX.Element {
   );
 }
 
-function getTwemoji(
-  emojis: EmojiData,
-  emoji: Emoji,
-  components: EmojiComponents,
-  tone?: EmojiSkinTone,
-): string {
-  const skinTone = convertSkinToneToComponent(components, tone);
-  const tonedEmoji = getEmojiWithSkinTone(emojis, emoji, skinTone);
-  return twemoji.parse(tonedEmoji);
-}
-
-function renderTwemoji(
-  emojis: EmojiData,
-  emoji: Emoji,
-  components: EmojiComponents,
-  tone?: EmojiSkinTone,
-): JSX.Element {
-  return <span innerHTML={getTwemoji(emojis, emoji, components, tone)} />;
-}
-
 export default function App(): JSX.Element {
   const [skinTone, setSkinTone] = createSignal<EmojiSkinTone>();
   const [pickedEmoji, setPickedEmoji] = createSignal<Emoji>();
-  const [useTwemoji, setUseTwemoji] = createSignal(true);
 
   const [search, setSearch] = createSignal('');
 
@@ -97,7 +71,6 @@ export default function App(): JSX.Element {
             setPickedEmoji(emoji);
           }}
           filter={(emoji): boolean => (search() !== '' ? emoji.name.includes(search()) : true)}
-          renderEmoji={useTwemoji() ? renderTwemoji : undefined}
         />
       </div>
       <span class="text-3xl text-gray-50 font-mono">
@@ -106,7 +79,7 @@ export default function App(): JSX.Element {
             const emojis = emojisData();
             const components = componentsData();
             if (emojis && components) {
-              return renderTwemoji(emojis, picked, components, skinTone());
+              return <span>{picked.emoji}</span>
             }
             return null;
           }}
@@ -155,15 +128,6 @@ export default function App(): JSX.Element {
           setValue={setSkinTone}
         />
       </div>
-      <button
-        type="button"
-        class="text-gray-50"
-        onClick={(): void => {
-          setUseTwemoji((c) => !c);
-        }}
-      >
-        {useTwemoji() ? 'Twemoji: ON' : 'Twemoji: OFF'}
-      </button>
     </div>
   );
 }

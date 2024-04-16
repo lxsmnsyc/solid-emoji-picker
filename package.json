@@ -6,9 +6,8 @@
     "examples/*"
   ],
   "devDependencies": {
-    "eslint": "^8.51.0",
-    "eslint-config-lxsmnsyc": "^0.6.5",
-    "lerna": "^6.4.1",
-    "typescript": "^5.2.2"
+    "@biomejs/biome": "^1.7.0",
+    "lerna": "^8.1.2",
+    "typescript": "^5.4.5"
   }
 }

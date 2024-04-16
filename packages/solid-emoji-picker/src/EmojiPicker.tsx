@@ -3,16 +3,16 @@ import type {
   Resource,
 } from 'solid-js';
 import {
-  createMemo,
-  createResource,
   For,
   Show,
+  createMemo,
+  createResource,
 } from 'solid-js';
 
 const ORIGIN_GROUP_DATA_KEY = 'data-by-group.json';
 const ORIGIN_COMPONENTS_KEY = 'data-emoji-components.json';
 const ORIGIN_EMOJI_KEY = 'data-by-emoji.json';
-const CDN_URL = 'https://unpkg.com/unicode-emoji-json/';
+const CDN_URL = 'https://unpkg.com/unicode-emoji-json@0.6.0/';
 
 let GROUP_DATA_KEY = `${CDN_URL}${ORIGIN_GROUP_DATA_KEY}`;
 let COMPONENTS_KEY = `${CDN_URL}${ORIGIN_COMPONENTS_KEY}`;
@@ -46,12 +46,18 @@ export interface Emoji {
 }
 
 export type EmojiData = Record<string, Emoji>;
-export type EmojiGroupData = Record<string, Emoji[]>;
+
+export interface EmojiGroupData {
+  name: string;
+  slug: string;
+  emojis: Emoji[];
+}
+
 export type EmojiComponents = Record<string, string>;
 
 let EMOJI_DATA: EmojiData | undefined;
 let EMOJI_COMPONENTS: EmojiComponents | undefined;
-let EMOJI_GROUP_DATA: EmojiGroupData | undefined;
+let EMOJI_GROUP_DATA: EmojiGroupData[] | undefined;
 
 export async function loadEmojiData(): Promise<EmojiData> {
   if (!EMOJI_DATA) {
@@ -61,10 +67,10 @@ export async function loadEmojiData(): Promise<EmojiData> {
   return EMOJI_DATA;
 }
 
-export async function loadEmojiGroupData(): Promise<EmojiGroupData> {
+export async function loadEmojiGroupData(): Promise<EmojiGroupData[]> {
   if (!EMOJI_GROUP_DATA) {
     const response = await fetch(GROUP_DATA_KEY);
-    EMOJI_GROUP_DATA = await response.json() as EmojiGroupData;
+    EMOJI_GROUP_DATA = await response.json() as EmojiGroupData[];
   }
   return EMOJI_GROUP_DATA;
 }
@@ -95,8 +101,8 @@ export function useEmojiComponents(): Resource<EmojiComponents | undefined> {
   return data;
 }
 
-export function useEmojiGroupData(): Resource<EmojiGroupData | undefined> {
-  const [data] = createResource<EmojiGroupData>(loadEmojiGroupData);
+export function useEmojiGroupData(): Resource<EmojiGroupData[] | undefined> {
+  const [data] = createResource<EmojiGroupData[]>(loadEmojiGroupData);
   return data;
 }
 
@@ -202,12 +208,12 @@ export function EmojiPicker(props: EmojiPickerProps): JSX.Element {
 
         if (emoji && components && emojiGroup) {
           return (
-            <For each={Object.keys(emojiGroup)}>
+            <For each={emojiGroup}>
               {(group): JSX.Element => (
                 <div class="emoji-section">
-                  <span class="emoji-section-title">{group}</span>
+                  <span class="emoji-section-title">{group.name}</span>
                   <div class="emoji-items">
-                    <For each={emojiGroup[group]}>
+                    <For each={group.emojis}>
                       {(emojiItem): JSX.Element => (
                         <Show when={props.filter ? props.filter(emojiItem) : true}>
                           <button

@@ -127,6 +127,9 @@ If `renderEmoji` is unspecified, it renders the following:
 <span class="emoji">{emojiCodeWithSkinTone}</span>
 ```
 
+> [!WARNING]
+> As of April 2024, twemoji no longer works as their CDN is no longer maintained.
+
 ### Custom CDN
 
 By default, `solid-emoji-picker` loads the emoji data from `unicode-emoji-json`'s UNPKG. You can use the following to modify the data handling:
