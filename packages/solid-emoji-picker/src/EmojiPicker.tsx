@@ -139,7 +139,7 @@ export function getEmojiWithSkinTone(
   emoji: Emoji,
   skinTone?: string,
 ): string {
-  if (!skinTone || !emoji.skin_tone_support) {
+  if (!(skinTone && emoji.skin_tone_support)) {
     return emoji.emoji;
   }
   const emojiWithSkinTone = emoji.emoji.split(ZWJ)
