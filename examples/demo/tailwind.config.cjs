@@ -1,12 +1,8 @@
 module.exports = {
   mode: 'jit',
-  content: [
-    './src/**/*.tsx',
-  ],
+  content: ['./src/**/*.tsx'],
   darkMode: 'class', // or 'media' or 'class'
-  theme: {
-  },
+  theme: {},
   variants: {},
-  plugins: [
-  ],
+  plugins: [],
 };
