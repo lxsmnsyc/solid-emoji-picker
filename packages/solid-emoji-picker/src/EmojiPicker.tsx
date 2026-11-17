@@ -1,13 +1,6 @@
-import type {
-  JSX,
-  Resource,
-} from 'solid-js';
-import {
-  For,
-  Show,
-  createMemo,
-  createResource,
-} from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import type { Accessor } from 'solid-js';
+import { For, Show, createMemo } from 'solid-js';
 
 const ORIGIN_GROUP_DATA_KEY = 'data-by-group.json';
 const ORIGIN_COMPONENTS_KEY = 'data-emoji-components.json';
@@ -59,27 +52,25 @@ let EMOJI_DATA: EmojiData | undefined;
 let EMOJI_COMPONENTS: EmojiComponents | undefined;
 let EMOJI_GROUP_DATA: EmojiGroupData[] | undefined;
 
+// The body is trusted to match `T`, as it came from the configured data URL.
+async function fetchJSON<T>(url: string): Promise<T> {
+  const response = await fetch(url);
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  return (await response.json()) as T;
+}
+
 export async function loadEmojiData(): Promise<EmojiData> {
-  if (!EMOJI_DATA) {
-    const response = await fetch(EMOJI_KEY);
-    EMOJI_DATA = await response.json() as EmojiData;
-  }
+  EMOJI_DATA ??= await fetchJSON<EmojiData>(EMOJI_KEY);
   return EMOJI_DATA;
 }
 
 export async function loadEmojiGroupData(): Promise<EmojiGroupData[]> {
-  if (!EMOJI_GROUP_DATA) {
-    const response = await fetch(GROUP_DATA_KEY);
-    EMOJI_GROUP_DATA = await response.json() as EmojiGroupData[];
-  }
+  EMOJI_GROUP_DATA ??= await fetchJSON<EmojiGroupData[]>(GROUP_DATA_KEY);
   return EMOJI_GROUP_DATA;
 }
 
 export async function loadEmojiComponents(): Promise<EmojiComponents> {
-  if (!EMOJI_COMPONENTS) {
-    const response = await fetch(COMPONENTS_KEY);
-    EMOJI_COMPONENTS = await response.json() as EmojiComponents;
-  }
+  EMOJI_COMPONENTS ??= await fetchJSON<EmojiComponents>(COMPONENTS_KEY);
   return EMOJI_COMPONENTS;
 }
 
@@ -91,27 +82,21 @@ export function setEmojiComponents(data: EmojiComponents): void {
   EMOJI_COMPONENTS = data;
 }
 
-export function useEmojiData(): Resource<EmojiData | undefined> {
-  const [data] = createResource<EmojiData>(loadEmojiData);
-  return data;
+// The accessors below read as pending until the data arrives, so a read
+// suspends the nearest `<Loading>` boundary instead of returning `undefined`.
+export function useEmojiData(): Accessor<EmojiData> {
+  return createMemo(async () => loadEmojiData());
 }
 
-export function useEmojiComponents(): Resource<EmojiComponents | undefined> {
-  const [data] = createResource<EmojiComponents>(loadEmojiComponents);
-  return data;
+export function useEmojiComponents(): Accessor<EmojiComponents> {
+  return createMemo(async () => loadEmojiComponents());
 }
 
-export function useEmojiGroupData(): Resource<EmojiGroupData[] | undefined> {
-  const [data] = createResource<EmojiGroupData[]>(loadEmojiGroupData);
-  return data;
+export function useEmojiGroupData(): Accessor<EmojiGroupData[]> {
+  return createMemo(async () => loadEmojiGroupData());
 }
 
-export type EmojiSkinTone =
-  | 'light'
-  | 'medium-light'
-  | 'medium'
-  | 'medium-dark'
-  | 'dark';
+export type EmojiSkinTone = 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
 
 const SKIN_TONE_TO_COMPONENT: Record<EmojiSkinTone, string> = {
   light: 'light_skin_tone',
@@ -134,15 +119,12 @@ export function convertSkinToneToComponent(
 const VARIATION = '\uFE0F';
 const ZWJ = '\u200D';
 
-export function getEmojiWithSkinTone(
-  emojis: EmojiData,
-  emoji: Emoji,
-  skinTone?: string,
-): string {
+export function getEmojiWithSkinTone(emojis: EmojiData, emoji: Emoji, skinTone?: string): string {
   if (!(skinTone && emoji.skin_tone_support)) {
     return emoji.emoji;
   }
-  const emojiWithSkinTone = emoji.emoji.split(ZWJ)
+  const emojiWithSkinTone = emoji.emoji
+    .split(ZWJ)
     .map((chunk) => {
       if (chunk in emojis && emojis[chunk].skin_tone_support) {
         return `${chunk}${skinTone}`;
@@ -151,7 +133,7 @@ export function getEmojiWithSkinTone(
     })
     .join(ZWJ);
 
-  const emojiWithoutVariation = emojiWithSkinTone.replaceAll(`${VARIATION}${skinTone}`, `${skinTone}`);
+  const emojiWithoutVariation = emojiWithSkinTone.replaceAll(`${VARIATION}${skinTone}`, skinTone);
 
   return emojiWithoutVariation;
 }
@@ -164,19 +146,18 @@ function DEFAULT_EMOJI_RENDER(
 ): JSX.Element {
   return (
     <span class="emoji">
-      {getEmojiWithSkinTone(
-        emojis,
-        emoji,
-        convertSkinToneToComponent(components, skinTone),
-      )}
+      {getEmojiWithSkinTone(emojis, emoji, convertSkinToneToComponent(components, skinTone))}
     </span>
   );
 }
 
-export type EmojiEventHandler<T extends Event> = (emoji: Emoji, event: T & {
-  currentTarget: HTMLButtonElement;
-  target: Element;
-}) => void;
+export type EmojiEventHandler<T extends Event> = (
+  emoji: Emoji,
+  event: T & {
+    currentTarget: HTMLButtonElement;
+    target: Element;
+  },
+) => void;
 
 export interface EmojiPickerProps {
   skinTone?: EmojiSkinTone;
@@ -197,47 +178,41 @@ export function EmojiPicker(props: EmojiPickerProps): JSX.Element {
   const componentData = useEmojiComponents();
   const emojiGroupData = useEmojiGroupData();
 
-  const renderEmoji = createMemo(() => props.renderEmoji || DEFAULT_EMOJI_RENDER);
+  const renderEmoji = createMemo(() => props.renderEmoji ?? DEFAULT_EMOJI_RENDER);
 
   return (
     <div class="emoji-picker">
-      {createMemo(() => {
-        const emoji = emojiData();
-        const components = componentData();
-        const emojiGroup = emojiGroupData();
-
-        if (emoji && components && emojiGroup) {
-          return (
-            <For each={emojiGroup}>
-              {(group): JSX.Element => (
-                <div class="emoji-section">
-                  <span class="emoji-section-title">{group.name}</span>
-                  <div class="emoji-items">
-                    <For each={group.emojis}>
-                      {(emojiItem): JSX.Element => (
-                        <Show when={props.filter ? props.filter(emojiItem) : true}>
-                          <button
-                            type="button"
-                            class="emoji-button"
-                            onClick={props.onEmojiClick && [props.onEmojiClick, emojiItem]}
-                            onFocus={props.onEmojiFocus && [props.onEmojiFocus, emojiItem]}
-                            onMouseOver={props.onEmojiHover && [props.onEmojiHover, emojiItem]}
-                            title={emojiItem.name}
-                          >
-                            {renderEmoji()(emoji, emojiItem, components, props.skinTone)}
-                          </button>
-                        </Show>
-                      )}
-                    </For>
-                  </div>
-                </div>
-              )}
-            </For>
-          );
-        }
-
-        return null;
-      })() }
+      <For each={emojiGroupData()}>
+        {(group): JSX.Element => (
+          <div class="emoji-section">
+            <span class="emoji-section-title">{group.name}</span>
+            <div class="emoji-items">
+              <For each={group.emojis}>
+                {(emojiItem): JSX.Element => (
+                  <Show when={props.filter ? props.filter(emojiItem) : true}>
+                    <button
+                      type="button"
+                      class="emoji-button"
+                      onClick={(event): void => {
+                        props.onEmojiClick?.(emojiItem, event);
+                      }}
+                      onFocus={(event): void => {
+                        props.onEmojiFocus?.(emojiItem, event);
+                      }}
+                      onMouseOver={(event): void => {
+                        props.onEmojiHover?.(emojiItem, event);
+                      }}
+                      title={emojiItem.name}
+                    >
+                      {renderEmoji()(emojiData(), emojiItem, componentData(), props.skinTone)}
+                    </button>
+                  </Show>
+                )}
+              </For>
+            </div>
+          </div>
+        )}
+      </For>
     </div>
   );
 }
