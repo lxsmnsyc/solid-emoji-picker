@@ -1,14 +1,8 @@
-import type {
-  EmojiSkinTone,
-  Emoji,
-} from 'solid-emoji-picker';
-import {
-  EmojiPicker,
-  useEmojiComponents,
-  useEmojiData,
-} from 'solid-emoji-picker';
-import type { JSX, Setter } from 'solid-js';
-import { createSignal, Show } from 'solid-js';
+import type { Emoji, EmojiSkinTone } from 'solid-emoji-picker';
+import { EmojiPicker } from 'solid-emoji-picker';
+import type { JSX } from '@solidjs/web';
+import type { Setter } from 'solid-js';
+import { Loading, Show, createSignal } from 'solid-js';
 
 function classNames(...classes: (string | boolean | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -49,9 +43,6 @@ export default function App(): JSX.Element {
 
   const [search, setSearch] = createSignal('');
 
-  const emojisData = useEmojiData();
-  const componentsData = useEmojiComponents();
-
   return (
     <div class="min-h-screen bg-gradient-to-bl from-indigo-600 to-sky-400 flex flex-col space-y-4 items-center justify-center">
       <span class="text-4xl font-mono text-gray-50 font-bold">solid-emoji-picker</span>
@@ -65,24 +56,19 @@ export default function App(): JSX.Element {
             setSearch(e.currentTarget.value);
           }}
         />
-        <EmojiPicker
-          skinTone={skinTone()}
-          onEmojiClick={(emoji): void => {
-            setPickedEmoji(emoji);
-          }}
-          filter={(emoji): boolean => (search() !== '' ? emoji.name.includes(search()) : true)}
-        />
+        <Loading fallback="Loading emojis.">
+          <EmojiPicker
+            skinTone={skinTone()}
+            onEmojiClick={(emoji): void => {
+              setPickedEmoji(emoji);
+            }}
+            filter={(emoji): boolean => (search() === '' ? true : emoji.name.includes(search()))}
+          />
+        </Loading>
       </div>
       <span class="text-3xl text-gray-50 font-mono">
         <Show when={pickedEmoji()} keyed fallback="No emoji picked.">
-          {(picked): JSX.Element => {
-            const emojis = emojisData();
-            const components = componentsData();
-            if (emojis && components) {
-              return <span>{picked.emoji}</span>
-            }
-            return null;
-          }}
+          {(picked): JSX.Element => <span>{picked.emoji}</span>}
         </Show>
       </span>
       <div class="flex items-center justify-center">
